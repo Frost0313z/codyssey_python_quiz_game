@@ -174,6 +174,43 @@ class QuizGame:
             # 여기까지 왔으면 범위 안의 숫자다
             return number
 
+    def play_quiz(self):
+        # 퀴즈가 하나도 없으면 풀 게 없으니 안내만 하고 메뉴로 돌아간다
+        if len(self.quizzes) == 0:
+            print("등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해 주세요.")
+            return
+
+        total = len(self.quizzes)  # 전체 문제 수
+        correct = 0                # 맞힌 문제 수
+        number = 1                 # 지금 몇 번째 문제인지
+
+        print()
+        print("퀴즈를 시작합니다! (총 " + str(total) + "문제)")
+
+        # 퀴즈를 하나씩 꺼내서 차례로 낸다
+        for quiz in self.quizzes:
+            print()
+            print("[문제 " + str(number) + "]")
+            quiz.show_quiz()
+
+            # 정답 번호는 1~4 만 받는다 (메뉴에서 만든 입력 메서드를 그대로 쓴다)
+            user_answer = self.select_num_range("정답 번호: ", 1, 4)
+
+            if quiz.check_answer(user_answer) == True:
+                print("정답입니다!")
+                correct = correct + 1
+            else:
+                print("오답입니다. 정답은 " + str(quiz.answer) + "번입니다.")
+
+            number = number + 1
+
+        # 점수는 100점 만점으로 바꾼다 (맞힌 수 ÷ 문제 수 × 100, 반올림)
+        # 퀴즈를 추가하면 문제 수가 바뀌니, 맞힌 개수보다 점수로 비교하는 게 공평하다 (PRD D2)
+        score = round(correct / total * 100)
+
+        print()
+        print(str(total) + "문제 중 " + str(correct) + "문제 정답 (" + str(score) + "점)")
+
     def run(self):
         # 5번(종료)을 고를 때까지 메뉴를 계속 보여 준다
         while True:
@@ -188,7 +225,7 @@ class QuizGame:
             choice = self.select_num_range("메뉴를 선택하세요: ", 1, 5)
 
             if choice == 1:
-                print("퀴즈 풀기는 준비 중입니다.")
+                self.play_quiz()
             elif choice == 2:
                 print("퀴즈 추가는 준비 중입니다.")
             elif choice == 3:
