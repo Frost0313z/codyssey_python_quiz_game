@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# 퀴즈 게임: 손상된 저장 파일을 보관한 것 (state.json 자체는 산출물이라 올린다)
+state.json.bak

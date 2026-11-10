@@ -1,3 +1,6 @@
+import json
+import os
+
 from quiz import Quiz
 
 
@@ -5,44 +8,140 @@ class QuizGame:
     """퀴즈 게임 전체를 관리하는 클래스"""
 
     def __init__(self):
-        # Quiz 객체들을 담을 목록. 지금은 기본 퀴즈로 시작한다
-        # (5단계에서 state.json 을 불러오도록 바뀐다)
-        self.quizzes = self.make_default_quizzes()
+        # state.json 은 "실행한 곳"이 아니라 "이 파일(quiz_game.py)이 있는 폴더"에 둔다
+        # 그래야 다른 폴더에서 python 경로\main.py 로 실행해도 같은 파일을 쓴다
+        folder = os.path.dirname(os.path.abspath(__file__))
+        self.file_path = os.path.join(folder, "state.json")
+
+        self.quizzes = []        # Quiz 객체들을 담을 목록
         self.high_score = None   # 최고 점수. 한 번도 안 풀었으면 None
 
-    def make_default_quizzes(self):
-        # 기본 퀴즈 5개를 새로 만들어서 목록으로 돌려준다
-        # state.json 이 없을 때(첫 실행)와 파일이 깨졌을 때 쓴다
-        # 부를 때마다 새 목록을 만들기 때문에, 퀴즈를 추가해도 기본 퀴즈는 그대로 남는다
-        quizzes = []
+        # 저장된 퀴즈와 최고 점수를 불러온다
+        self.load_data()
 
-        quizzes.append(Quiz(
-            "세상에서 가장 큰 동물은?",
-            ["아프리카코끼리", "흰긴수염고래", "기린", "백상아리"],
-            2
-        ))
-        quizzes.append(Quiz(
-            "다리가 8개인 동물은?",
-            ["거미", "개미", "나비", "잠자리"],
-            1
-        ))
-        quizzes.append(Quiz(
-            "펭귄은 어떤 무리에 속할까?",
-            ["포유류", "조류", "파충류", "어류"],
-            2
-        ))
-        quizzes.append(Quiz(
-            "캥거루가 원래 사는 곳은?",
-            ["아프리카", "남아메리카", "오스트레일리아", "유럽"],
-            3
-        ))
-        quizzes.append(Quiz(
-            "땅 위에서 가장 빨리 달리는 동물은?",
-            ["사자", "말", "타조", "치타"],
-            4
-        ))
+    def load_data(self):
+        # 퀴즈는 모두 state.json 에서 가져온다 (코드 안에 따로 넣어 둔 퀴즈는 없다)
 
-        return quizzes
+        # 1) 파일이 없으면 퀴즈 0개로 시작한다
+        if not os.path.exists(self.file_path):
+            print("state.json 파일이 없습니다. 퀴즈 0개로 시작합니다.")
+            return
+
+        # 2) 파일을 읽어서 JSON 을 파이썬 데이터(dict)로 바꾼다
+        try:
+            with open(self.file_path, "r", encoding="utf-8") as file:
+                data = json.load(file)
+        except ValueError:
+            # JSON 모양이 깨졌을 때 (예: 중괄호 하나가 빠짐)
+            self.handle_broken_file("저장 파일이 손상되었습니다.")
+            return
+        except OSError:
+            # 파일을 읽을 수 없을 때 (예: 권한이 없음)
+            self.handle_broken_file("저장 파일을 읽지 못했습니다.")
+            return
+
+        # 3) JSON 은 맞는데 내용 형태가 틀렸을 때 (예: 정답이 7, 선택지가 3개)
+        if self.check_data(data) == False:
+            self.handle_broken_file("저장 파일의 내용이 올바르지 않습니다.")
+            return
+
+        # 4) 여기까지 왔으면 멀쩡한 파일이다. dict 를 Quiz 객체로 바꿔 담는다
+        self.quizzes = []
+        for item in data["quizzes"]:
+            quiz = Quiz(item["question"], item["options"], item["answer"])
+            self.quizzes.append(quiz)
+        self.high_score = data["high_score"]
+
+        # 불러온 결과를 알려 준다
+        if self.high_score == None:
+            score_text = "최고점수 없음"
+        else:
+            score_text = "최고점수 " + str(self.high_score) + "점"
+        print("저장된 데이터를 불러왔습니다 (퀴즈 " + str(len(self.quizzes)) + "개, " + score_text + ")")
+
+    def handle_broken_file(self, message):
+        # 파일에 문제가 있을 때: 안내 → 망가진 파일은 .bak 로 보관 → 퀴즈 0개로 시작
+        # 망가진 파일을 지우지 않는 이유: 그 안에 퀴즈가 남아 있어서 손으로 고쳐 살릴 수 있다
+        print(message)
+        backup_path = self.file_path + ".bak"
+        try:
+            os.replace(self.file_path, backup_path)  # 이름 바꾸기 (같은 이름의 .bak 가 있으면 덮어씀)
+            print("기존 파일은 state.json.bak 으로 보관했습니다.")
+        except OSError:
+            print("기존 파일을 보관하지 못했습니다.")
+
+        print("퀴즈 0개로 시작합니다.")
+        self.quizzes = []
+        self.high_score = None
+
+    def check_data(self, data):
+        # 불러온 data 가 PRD 4장의 규칙에 맞으면 True, 하나라도 틀리면 False
+
+        # 맨 바깥은 dict 이고, quizzes 와 high_score 두 키가 있어야 한다
+        if type(data) != dict:
+            return False
+        if "quizzes" not in data or "high_score" not in data:
+            return False
+
+        # quizzes 는 목록이어야 한다 (빈 목록도 괜찮다 = 퀴즈 0개)
+        if type(data["quizzes"]) != list:
+            return False
+
+        # 퀴즈 하나하나를 검사한다
+        for item in data["quizzes"]:
+            if type(item) != dict:
+                return False
+            if "question" not in item or "options" not in item or "answer" not in item:
+                return False
+
+            # 문제: 빈 글자가 아닌 문자열
+            question = item["question"]
+            if type(question) != str or question.strip() == "":
+                return False
+
+            # 선택지: 문자열 정확히 4개
+            options = item["options"]
+            if type(options) != list or len(options) != 4:
+                return False
+            for option in options:
+                if type(option) != str:
+                    return False
+
+            # 정답: 1~4 정수
+            # type() 으로 비교하면 true/false 가 숫자로 몰래 통과하는 것도 막는다
+            answer = item["answer"]
+            if type(answer) != int:
+                return False
+            if answer < 1 or answer > 4:
+                return False
+
+        # 최고 점수: null(None) 이거나 0~100 정수
+        high_score = data["high_score"]
+        if high_score != None:
+            if type(high_score) != int:
+                return False
+            if high_score < 0 or high_score > 100:
+                return False
+
+        return True
+
+    def save_data(self):
+        # Quiz 객체들을 dict 로 바꿔서 목록에 담는다
+        quiz_list = []
+        for quiz in self.quizzes:
+            quiz_list.append(quiz.to_dict())
+
+        data = {
+            "quizzes": quiz_list,
+            "high_score": self.high_score,
+        }
+
+        # 파일에 쓴다. ensure_ascii=False 는 한글을 글자 그대로 저장하라는 뜻
+        try:
+            with open(self.file_path, "w", encoding="utf-8") as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+        except OSError:
+            print("파일을 저장하지 못했습니다. 이번 변경은 프로그램을 끄면 사라집니다.")
 
     def select_num_range(self, text, min_num, max_num):
         # text    : 화면에 띄울 질문 (예: "메뉴를 선택하세요: ")
