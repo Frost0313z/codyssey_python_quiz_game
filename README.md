@@ -1,7 +1,45 @@
-# 동물 퀴즈 게임 (codyssey_python_quiz_game)
+# 🐾 동물 퀴즈 게임
 
-코디세이 미션 「Git과 함께하는 Python 첫 발자국」으로 만든 **터미널 퀴즈 게임**입니다.
-Python 기초 문법과 클래스로 게임을 만들고, Git 브랜치 · 커밋 · PR(Pull Request, 병합 요청)로 개발 기록을 남겼습니다.
+**흰긴수염고래부터 치타까지 — 터미널에서 동물 퀴즈를 풀고, 문제를 직접 만들고, 최고 점수에 도전하는 파이썬 게임**
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white)
+![외부 라이브러리](https://img.shields.io/badge/%EC%99%B8%EB%B6%80%20%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-0%EA%B0%9C-2EA44F?style=flat)
+![저장](https://img.shields.io/badge/%EC%A0%80%EC%9E%A5-state.json-F7B500?style=flat&logo=json&logoColor=white)
+![퀴즈](https://img.shields.io/badge/%ED%80%B4%EC%A6%88-%EB%8F%99%EB%AC%BC%205%EB%AC%B8%EC%A0%9C-8B5CF6?style=flat)
+![코디세이](https://img.shields.io/badge/%EC%BD%94%EB%94%94%EC%84%B8%EC%9D%B4-%EB%AF%B8%EC%85%98%202-0B7285?style=flat)
+
+```
+[문제 2]
+다리가 8개인 동물은?
+1. 거미
+2. 개미
+3. 나비
+4. 잠자리
+정답 번호: 2
+오답입니다. 정답은 1번입니다.
+        ⋮
+5문제 중 4문제 정답 (80점)
+새로운 최고 점수입니다! (80점)
+```
+
+| | |
+|---|---|
+| 🎲 **랜덤 출제** | 풀 때마다 문제 순서가 섞입니다. 순서를 외워서는 못 풉니다 |
+| ✍️ **퀴즈 만들기** | 문제 · 선택지 4개 · 정답만 넣으면 바로 저장. 내가 낸 문제로 친구에게 도전 |
+| 🏆 **최고 점수** | 100점 만점으로 매겨 기록. 껐다 켜도 남습니다 |
+| 🛡️ **안 꺼지는 입력** | 글자 · 빈 칸 · 범위 밖 숫자 · Ctrl+C 에도 오류 없이 다시 묻거나 조용히 종료 |
+
+**30초 만에 해 보기**
+
+```
+git clone https://github.com/Frost0313z/codyssey_python_quiz_game.git
+cd codyssey_python_quiz_game
+python main.py
+```
+
+코디세이 미션 「Git과 함께하는 Python 첫 발자국」 결과물입니다. Python 기초 문법과 클래스로 게임을 만들고, Git 브랜치 · 커밋 · PR(Pull Request, 병합 요청)로 개발 기록을 남겼습니다.
+
+---
 
 ## 1. 프로젝트 개요
 
