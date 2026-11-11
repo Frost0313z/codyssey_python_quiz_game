@@ -252,6 +252,21 @@ class QuizGame:
         self.save_data()
         print("퀴즈가 추가되었습니다! (총 " + str(len(self.quizzes)) + "개)")
 
+    def show_list(self):
+        # 퀴즈가 하나도 없으면 안내만 하고 메뉴로 돌아간다
+        if len(self.quizzes) == 0:
+            print("등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해 주세요.")
+            return
+
+        print()
+        print("등록된 퀴즈 목록 (총 " + str(len(self.quizzes)) + "개)")
+
+        # 문제만 번호를 붙여서 보여 준다 (선택지와 정답은 보여 주지 않는다)
+        number = 1
+        for quiz in self.quizzes:
+            print("[" + str(number) + "] " + quiz.question)
+            number = number + 1
+
     def run(self):
         # 5번(종료)을 고를 때까지 메뉴를 계속 보여 준다
         while True:
@@ -271,7 +286,7 @@ class QuizGame:
                 new_quiz = self.input_new_quiz()  # 입력받아 Quiz 객체를 만들고
                 self.add_quiz(new_quiz)           # 목록에 넣고 저장한다
             elif choice == 3:
-                print("퀴즈 목록은 준비 중입니다.")
+                self.show_list()
             elif choice == 4:
                 print("점수 확인은 준비 중입니다.")
             elif choice == 5:
