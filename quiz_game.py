@@ -1,5 +1,6 @@
 import json
 import os
+import random
 
 from quiz import Quiz
 
@@ -185,10 +186,15 @@ class QuizGame:
         number = 1                 # 지금 몇 번째 문제인지
 
         print()
-        print("퀴즈를 시작합니다! (총 " + str(total) + "문제)")
+        print("퀴즈를 시작합니다! (총 " + str(total) + "문제, 순서는 매번 섞입니다)")
 
-        # 퀴즈를 하나씩 꺼내서 차례로 낸다
-        for quiz in self.quizzes:
+        # 문제 순서를 섞는다 (보너스: 랜덤 출제)
+        # self.quizzes 를 바로 섞으면 저장할 때 state.json 순서까지 바뀌므로, 복사본을 만들어 섞는다
+        quiz_order = self.quizzes.copy()
+        random.shuffle(quiz_order)
+
+        # 섞은 순서대로 퀴즈를 하나씩 꺼내서 낸다
+        for quiz in quiz_order:
             print()
             print("[문제 " + str(number) + "]")
             quiz.show_quiz()
