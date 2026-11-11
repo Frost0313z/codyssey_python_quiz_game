@@ -211,6 +211,18 @@ class QuizGame:
         print()
         print(str(total) + "문제 중 " + str(correct) + "문제 정답 (" + str(score) + "점)")
 
+        # 이번 점수를 최고 점수와 비교한다
+        self.update_high_score(score)
+
+    def update_high_score(self, score):
+        # 처음 푼 경우(None) 이거나, 이번 점수가 더 높으면 최고 점수를 바꾸고 저장한다
+        if self.high_score == None or score > self.high_score:
+            self.high_score = score
+            self.save_data()
+            print("새로운 최고 점수입니다! (" + str(score) + "점)")
+        else:
+            print("최고 점수는 그대로 " + str(self.high_score) + "점입니다.")
+
     def input_text(self, text):
         # 빈 글자가 아닌 글을 받을 때까지 계속 다시 묻는다
         # (select_num_range 의 "글자 버전". 문제와 선택지를 받을 때 쓴다)
@@ -267,6 +279,13 @@ class QuizGame:
             print("[" + str(number) + "] " + quiz.question)
             number = number + 1
 
+    def show_score(self):
+        # 한 번도 안 풀었으면 high_score 가 None 이다
+        if self.high_score == None:
+            print("아직 기록 없음 — 1번 메뉴에서 퀴즈를 풀어 보세요.")
+        else:
+            print("최고 점수: " + str(self.high_score) + "점")
+
     def run(self):
         # 5번(종료)을 고를 때까지 메뉴를 계속 보여 준다
         while True:
@@ -288,7 +307,7 @@ class QuizGame:
             elif choice == 3:
                 self.show_list()
             elif choice == 4:
-                print("점수 확인은 준비 중입니다.")
+                self.show_score()
             elif choice == 5:
                 print("프로그램을 종료합니다.")
                 break  # while 반복을 끝낸다
