@@ -211,6 +211,47 @@ class QuizGame:
         print()
         print(str(total) + "문제 중 " + str(correct) + "문제 정답 (" + str(score) + "점)")
 
+    def input_text(self, text):
+        # 빈 글자가 아닌 글을 받을 때까지 계속 다시 묻는다
+        # (select_num_range 의 "글자 버전". 문제와 선택지를 받을 때 쓴다)
+        while True:
+            user_input = input(text)
+            user_input = user_input.strip()  # 앞뒤 공백을 지운다
+
+            if user_input == "":
+                print("빈 칸은 안 됩니다. 다시 입력하세요.")
+                continue  # while 맨 위로 돌아가 다시 묻는다
+
+            return user_input
+
+    def input_new_quiz(self):
+        # 문제 · 선택지 4개 · 정답 번호를 입력받아 Quiz 객체를 하나 만들어 돌려준다
+        print()
+        print("새 퀴즈를 추가합니다.")
+
+        question = self.input_text("문제: ")
+
+        # 선택지 4개를 차례로 받아 목록에 담는다
+        options = []
+        number = 1
+        while number <= 4:
+            option = self.input_text("선택지 " + str(number) + ": ")
+            options.append(option)
+            number = number + 1
+
+        # 정답 번호는 1~4 만 받는다 (메뉴 · 퀴즈 풀기와 같은 입력 메서드)
+        answer = self.select_num_range("정답 번호(1-4): ", 1, 4)
+
+        new_quiz = Quiz(question, options, answer)
+        return new_quiz
+
+    def add_quiz(self, quiz):
+        # 만들어진 Quiz 객체를 목록 맨 뒤에 넣고, 바로 state.json 에 저장한다
+        # (바로 저장해야 프로그램이 갑자기 꺼져도 추가한 퀴즈가 남는다)
+        self.quizzes.append(quiz)
+        self.save_data()
+        print("퀴즈가 추가되었습니다! (총 " + str(len(self.quizzes)) + "개)")
+
     def run(self):
         # 5번(종료)을 고를 때까지 메뉴를 계속 보여 준다
         while True:
@@ -227,7 +268,8 @@ class QuizGame:
             if choice == 1:
                 self.play_quiz()
             elif choice == 2:
-                print("퀴즈 추가는 준비 중입니다.")
+                new_quiz = self.input_new_quiz()  # 입력받아 Quiz 객체를 만들고
+                self.add_quiz(new_quiz)           # 목록에 넣고 저장한다
             elif choice == 3:
                 print("퀴즈 목록은 준비 중입니다.")
             elif choice == 4:
