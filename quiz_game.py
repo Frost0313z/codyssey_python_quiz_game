@@ -88,32 +88,9 @@ class QuizGame:
         if type(data["quizzes"]) != list:
             return False
 
-        # 퀴즈 하나하나를 검사한다
+        # 퀴즈 하나하나를 검사한다. 하나라도 틀리면 파일 전체가 틀린 것이다
         for item in data["quizzes"]:
-            if type(item) != dict:
-                return False
-            if "question" not in item or "options" not in item or "answer" not in item:
-                return False
-
-            # 문제: 빈 글자가 아닌 문자열
-            question = item["question"]
-            if type(question) != str or question.strip() == "":
-                return False
-
-            # 선택지: 문자열 정확히 4개
-            options = item["options"]
-            if type(options) != list or len(options) != 4:
-                return False
-            for option in options:
-                if type(option) != str:
-                    return False
-
-            # 정답: 1~4 정수
-            # type() 으로 비교하면 true/false 가 숫자로 몰래 통과하는 것도 막는다
-            answer = item["answer"]
-            if type(answer) != int:
-                return False
-            if answer < 1 or answer > 4:
+            if self.check_quiz_item(item) == False:
                 return False
 
         # 최고 점수: null(None) 이거나 0~100 정수
@@ -123,6 +100,36 @@ class QuizGame:
                 return False
             if high_score < 0 or high_score > 100:
                 return False
+
+        return True
+
+    def check_quiz_item(self, item):
+        # 퀴즈 한 개(dict)가 규칙에 맞으면 True, 틀리면 False
+        if type(item) != dict:
+            return False
+        if "question" not in item or "options" not in item or "answer" not in item:
+            return False
+
+        # 문제: 빈 글자가 아닌 문자열
+        question = item["question"]
+        if type(question) != str or question.strip() == "":
+            return False
+
+        # 선택지: 문자열 정확히 4개
+        options = item["options"]
+        if type(options) != list or len(options) != 4:
+            return False
+        for option in options:
+            if type(option) != str:
+                return False
+
+        # 정답: 1~4 정수
+        # type() 으로 비교하면 true/false 가 숫자로 몰래 통과하는 것도 막는다
+        answer = item["answer"]
+        if type(answer) != int:
+            return False
+        if answer < 1 or answer > 4:
+            return False
 
         return True
 
