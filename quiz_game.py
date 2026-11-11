@@ -287,6 +287,21 @@ class QuizGame:
             print("최고 점수: " + str(self.high_score) + "점")
 
     def run(self):
+        # 프로그램의 시작점. 메뉴를 돌리다가 갑자기 끊기는 경우를 여기서 한 번에 잡는다
+        # 퀴즈 추가와 최고 점수는 바뀌는 순간 이미 저장해 두었기 때문에, 여기서 따로 저장할 것은 없다
+        # 풀던 도중에 끊기면 그 판의 점수는 버린다 (최고 점수는 다 풀었을 때만 바뀌므로) (PRD D10)
+        try:
+            self.menu_loop()
+        except KeyboardInterrupt:
+            # Ctrl+C 를 눌렀을 때
+            print()
+            print("Ctrl+C 를 눌러 프로그램을 종료합니다. 저장된 퀴즈와 최고 점수는 그대로 남아 있습니다.")
+        except EOFError:
+            # 더 이상 입력이 들어오지 않을 때 (예: python main.py < 입력.txt 에서 파일이 다 떨어짐)
+            print()
+            print("입력이 끝나 프로그램을 종료합니다. 저장된 퀴즈와 최고 점수는 그대로 남아 있습니다.")
+
+    def menu_loop(self):
         # 5번(종료)을 고를 때까지 메뉴를 계속 보여 준다
         while True:
             print()
