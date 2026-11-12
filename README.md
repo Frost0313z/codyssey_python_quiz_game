@@ -239,9 +239,41 @@ python main.py
 ## 8. Git 사용 기록
 
 - 기능마다 브랜치를 따서 작업하고(`feature/play`, `feature/add` 등), GitHub PR로 `main` 에 병합했습니다.
-- 커밋은 기능 단위로 `Feat:` · `Docs:` · `Refactor:` 머리말을 붙였습니다 — 병합 제외 21개 (2026-11-12 기준).
+- 커밋은 기능 단위로 `Feat:` · `Docs:` · `Refactor:` 머리말을 붙였습니다 — 병합 제외 23개 (2026-11-12 기준).
 - 진행 단계와 커밋 · PR 기록은 [docs/깃-활용과-진행-계획.md](docs/깃-활용과-진행-계획.md), 요구사항과 결정은 [docs/PRD.md](docs/PRD.md) 에 있습니다.
 - 2026-11-12 clone · pull 실습: 다른 폴더(`quiz-clone`)에 clone 해서 이 줄을 추가하고 push, 원래 폴더에서 pull 로 받았습니다.
+
+### 커밋 그래프 (`git log --oneline --graph`)
+
+기능마다 브랜치가 갈라졌다가 PR 로 `main` 에 합쳐진 모양입니다. 길어서 두 장으로 나눴습니다.
+
+**최신 쪽** — clone 실습 커밋부터 PR #5 까지
+
+![커밋 그래프 최신 쪽](docs/screenshots/git-graph-1.png)
+
+**처음 쪽** — PR #6 부터 `Initial commit` 까지
+
+![커밋 그래프 처음 쪽](docs/screenshots/git-graph-2.png)
+
+### init · clone · push · pull 실습
+
+다른 컴퓨터의 팀원을 흉내 내려고, 저장소를 다른 폴더(`quiz-clone`)에 받아 고쳐 올리고 원래 폴더에서 받아 왔습니다 (2026-11-12).
+
+**① `git init`** — 빈 폴더(`init-practice`)를 Git 저장소로 만들기
+
+![git init](docs/screenshots/git-init.png)
+
+**② `git clone`** — GitHub 저장소를 다른 폴더에 통째로 받기
+
+![git clone](docs/screenshots/git-clone.png)
+
+**③ `git add` · `commit` · `push`** — 받은 폴더에서 README 에 위 실습 줄을 더해 올리기
+
+![git push](docs/screenshots/git-push.png)
+
+**④ `git pull`** — 원래 폴더에서 받아 와 추가한 줄이 보이는지 확인
+
+![git pull](docs/screenshots/git-pull.png)
 
 ## 9. 한계
 
