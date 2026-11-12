@@ -241,6 +241,7 @@ python main.py
 - 기능마다 브랜치를 따서 작업하고(`feature/play`, `feature/add` 등), GitHub PR로 `main` 에 병합했습니다.
 - 커밋은 기능 단위로 `Feat:` · `Docs:` · `Refactor:` 머리말을 붙였습니다 — 병합 제외 21개 (2026-11-12 기준).
 - 진행 단계와 커밋 · PR 기록은 [docs/깃-활용과-진행-계획.md](docs/깃-활용과-진행-계획.md), 요구사항과 결정은 [docs/PRD.md](docs/PRD.md) 에 있습니다.
+- 2026-11-12 clone · pull 실습: 다른 폴더(`quiz-clone`)에 clone 해서 이 줄을 추가하고 push, 원래 폴더에서 pull 로 받았습니다.
 
 ## 9. 한계
 
